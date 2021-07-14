@@ -132,6 +132,8 @@ resource "aws_route_table" "public" {
   }
 }
 
+#test commit
+
 # Public Route Table Association
 resource "aws_route_table_association" "public-1" {
   subnet_id      = aws_subnet.subnet-public-1.id
