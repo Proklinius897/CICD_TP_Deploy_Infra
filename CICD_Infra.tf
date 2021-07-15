@@ -54,59 +54,6 @@ resource "aws_subnet" "subnet-private-1" {
   }
 }
 
-# Nat Instance
-#resource "aws_instance" "nat" {
-#  ami                    = "ami-0f630a3f40b1eb0b8"
-#  instance_type          = "t2.micro"
-#  subnet_id              = aws_subnet.subnet-public-1.id
-#  vpc_security_group_ids = [aws_security_group.allow_nat.id]
-#  source_dest_check      = "false"
-
-#  user_data = <<-EOF
-#        #!/bin/bash
-#        sysctl -w net.ipv4.ip_forward=1 /sbin/
-#        iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-#  EOF
-
-#  tags = {
-#    Name = "${var.env}-NatInstance"
-#  }
-#}
-
-## SG Rule chat_server_sg
-resource "aws_security_group" "chat_server_sg" {
-
-  name        = "chat_server_sg"
-  description = "Allow TCP 5555 & SSH inbound traffic"
-  vpc_id      = aws_vpc.vpc.id
-  
-  ingress {
-    description      = "5555 from EFREI_GROUP"
-    from_port        = 5555
-    to_port          = 5555
-    protocol         = "tcp"
-    cidr_blocks      = ["82.64.73.178/32","90.3.0.106/32","176.158.166.180/32","80.215.38.198/32","10.0.4.0/32","10.0.4.0/32"]
-  }
-
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-}
-
-## SG Rule ingress
-#resource "aws_security_group_rule" "ingress_allow_private" {
-#  type              = "ingress"
-#  from_port         = 0
-#  to_port           = 0
-#  protocol          = -1
-#  cidr_blocks       = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
-#  security_group_id = aws_security_group.allow_nat.id
-#}
-
 # Route Table
 ## Private
 ### Use Main Route Table
@@ -131,8 +78,6 @@ resource "aws_route_table" "public" {
     Name = "${var.env}-rt-public"
   }
 }
-
-#Commit test
 
 # Public Route Table Association
 resource "aws_route_table_association" "public-1" {
